@@ -1,0 +1,10 @@
+caer==2.0.8
+cvzone==1.5.2
+mypy==0.910
+mypy-extensions==0.4.3
+numpy==1.21.3
+opencv-contrib-python==4.5.4.58
+opencv-python==4.5.4.58
+SpeechRecognition==3.8.1
+toml==0.10.2
+typing-extensions==3.10.0.2
