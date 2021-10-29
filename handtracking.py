@@ -9,8 +9,10 @@ erase_mode = [0, 1, 1, 0, 0]
 cap_all = [1, 1, 1, 1, 1]
 clear_all = [0, 0, 0, 0, 0]
 blue_color = (255, 0, 0)
+black_color = (0, 0, 0)
+idk_color = (0, 255, 0)
 brush_thick = 20
-eraser_tick = 60
+eraser_thick = 60
 
 deb = 0
 # Set webcam capture from USB PORT 0
@@ -51,7 +53,7 @@ while True:
         #print(fingers)
         if fingers == draw_mode:
             print("draw")
-            cv2.circle(blackCanvas, (x1, y1), 15, blue_color, cv2.FILLED)
+            #cv2.circle(blackCanvas, (x1, y1), 15, blue_color, cv2.FILLED)
             if x_point == 0 and y_point == 0:
                 x_point, y_point = x1, y1
             cv2.line(blackCanvas, (x_point, y_point), (x1, y1), blue_color, brush_thick)
@@ -59,6 +61,11 @@ while True:
 
         elif fingers == erase_mode:
             print("erase")
+            #cv2.circle(blackCanvas, (x1, y1), 15, black_color, cv2.FILLED)
+            if x_point == 0 and y_point == 0:
+                x_point, y_point = x1, y1
+            cv2.line(blackCanvas, (x_point, y_point), (x1, y1), idk_color, eraser_thick)
+            x_point, y_point = x1, y1
         elif fingers == cap_all:
             print("capture all")
 
