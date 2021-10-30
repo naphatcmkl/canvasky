@@ -56,7 +56,7 @@ while True:
             #cv2.circle(blackCanvas, (x1, y1), 15, blue_color, cv2.FILLED)
             if x_point == 0 and y_point == 0:
                 x_point, y_point = x1, y1
-            cv2.line(blackCanvas, (x_point, y_point), (x1, y1), blue_color, brush_thick)
+            cv2.line(blackCanvas, (x_point, y_point), (x1, y1), idk_color, brush_thick)
             x_point, y_point = x1, y1
 
         elif fingers == erase_mode:
@@ -64,7 +64,7 @@ while True:
             #cv2.circle(blackCanvas, (x1, y1), 15, black_color, cv2.FILLED)
             if x_point == 0 and y_point == 0:
                 x_point, y_point = x1, y1
-            cv2.line(blackCanvas, (x_point, y_point), (x1, y1), idk_color, eraser_thick)
+            cv2.line(blackCanvas, (x_point, y_point), (x1, y1), black_color, eraser_thick)
             x_point, y_point = x1, y1
         elif fingers == cap_all:
             print("capture all")
@@ -73,11 +73,11 @@ while True:
     imgGray = cv2.cvtColor(blackCanvas, cv2.COLOR_BGR2GRAY)
     _, imgInv = cv2.threshold(imgGray, 50, 255, cv2.THRESH_BINARY_INV)
     imgInv = cv2.cvtColor(imgInv,cv2.COLOR_GRAY2BGR)
-    print("type img", type(img))
-    print("type imgInv ",type(imgInv))
-    print("type black ",type(blackCanvas))
-    #img = cv2.bitwise_and(img, imgInv)
-    #img = cv2.bitwise_or(img, blackCanvas)
+    #print("type img", type(img))
+    #print("type imgInv ",type(imgInv))
+    #print("type black ",type(blackCanvas))
+    img = cv2.bitwise_and(img, imgInv)
+    img = cv2.bitwise_or(img, blackCanvas)
 
     cv2.imshow("Canvas", img)
     cv2.imshow("Black", blackCanvas)
