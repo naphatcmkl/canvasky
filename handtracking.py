@@ -79,6 +79,7 @@ while True:
     img = cv2.bitwise_and(img, imgInv)
     img = cv2.bitwise_or(img, blackCanvas)
     #hello
+    #hello2
     cv2.imshow("Canvas", img)
     cv2.imshow("Black", blackCanvas)
     cv2.imshow("Inv", imgInv)
