@@ -85,14 +85,14 @@ while True:
                     print("You said: ", text)
 
                     # If the word we say translate == champ,
-                    if text == "blue":
+                    if text == "blue" or text == "bloom" or text == "boo" or text == "blue blue blue" or "blue" in text:
                         # Then print you're here.
                         idk_color = (245, 115, 57)
                         print("Change color to blue")
-                    elif text == "green":
+                    elif text == "green" or text == "clean" or "green" in text:
                         idk_color = (0, 255, 0)
                         print("Change color to green")
-                    elif text == "red" or text == "rape" or text == "lead" or text == "late":
+                    elif text == "red" or text == "rape" or text == "lead" or text == "late" or text == "rate" or text == "race" or "red" in text :
                         idk_color = (0, 0, 255)
                         print("Change color to red")
 
@@ -105,8 +105,10 @@ while True:
     # print("type img", type(img))
     # print("type imgInv ",type(imgInv))
     # print("type black ",type(blackCanvas))
-    img = cv2.bitwise_and(img, imgInv)
-    img = cv2.bitwise_or(img, blackCanvas)
+
+    #img = cv2.bitwise_and(img, imgInv)
+    #img = cv2.bitwise_or(img, blackCanvas)
+
     # hello
     # hello2
     cv2.imshow("Canvas", img)
