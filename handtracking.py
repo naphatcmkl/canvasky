@@ -106,8 +106,8 @@ while True:
     # print("type imgInv ",type(imgInv))
     # print("type black ",type(blackCanvas))
 
-    #img = cv2.bitwise_and(img, imgInv)
-    #img = cv2.bitwise_or(img, blackCanvas)
+    img = cv2.bitwise_and(img, imgInv)
+    img = cv2.bitwise_or(img, blackCanvas)
 
     # hello
     # hello2
