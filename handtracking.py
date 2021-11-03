@@ -71,7 +71,7 @@ while True:
             x_point, y_point = x1, y1
         elif fingers == cap_all:
             print("capture all")
-        elif fingers == [1, 0, 0, 0, 0]:
+        elif fingers == [1, 1, 1, 1, 0]:
             print("voice reg")
             with sr.Microphone() as source:
                 print("Speak: ")
