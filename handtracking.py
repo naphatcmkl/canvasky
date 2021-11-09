@@ -12,11 +12,25 @@ from PIL import Image
 
 r = sr.Recognizer()
 
+control_path = "controlhead"
+mycontrol = os.listdir(control_path)
+controller_list = []
+for index_me in mycontrol:
+    image_reader = cv2.imread(f'{control_path}/{index_me}')
+    controller_list.append(image_reader)
+print("png head file ",controller_list)
+
+control_tab = controller_list[0]
+control_tab_off = controller_list[1]
+# print("list1 ",control_tab)
+# print("list2 ",controller_list[1])
+
 draw_mode = [0, 1, 0, 0, 0]
 erase_mode = [0, 1, 1, 0, 0]
+idle_mode = [0, 1, 1, 1, 0]
 cap_all = [1, 1, 1, 1, 1]
 clear_all = [0, 0, 0, 0, 0]
-voice_cmd = [1, 1, 1, 1, 0]
+voice_cmd = [1, 1, 0, 0, 1]
 blue_color = (255, 0, 0)
 black_color = (0, 0, 0)
 idk_color = (0, 255, 0)
@@ -24,6 +38,8 @@ brush_thick = 20
 eraser_thick = 60
 canvas_show = 0
 running_main = True
+over = False
+show_tab = True
 
 deb = 0
 timer = 0
@@ -43,9 +59,11 @@ while running_main:
     # 1. Read capture
     
     success, img = capture.read()
+    
 
     # 2. Find Hand Landmarks
     hands, img = detector.findHands(img, flipType=True)
+
 
     if hands:
         lmList = hands[0]["lmList"]  # List of 21 Landmark points
@@ -80,6 +98,47 @@ while running_main:
             x_point, y_point = x1, y1
         elif fingers == cap_all:
             print("capture all")
+        elif fingers == idle_mode:
+            print("idling")
+            print("x1, ",x1," y1 ",y1)
+            cv2.rectangle(img,(x1,y1-25),(x2,y2+25),idk_color,cv2.FILLED)
+            if y1 < 85:
+                if 60 < x1 < 100:
+                    print("hide")
+                    show_tab = False
+                elif 160 < x1 < 200:
+                    print("save")
+                    print("saving...")
+                    save_path = 'savecanvas.png'
+                    all_titles = pygetwindow.getAllTitles()
+                    print(all_titles)
+                    save_window = pygetwindow.getWindowsWithTitle('Canvas')[0]
+                    xx1 = save_window.left
+                    yy1 = save_window.top
+                    height_1 = save_window.height
+                    width_1 = save_window.width
+                    xx2 = xx1 + width_1
+                    yy2 = yy1 + height_1
+                    pyautogui.screenshot(save_path)
+                    im = Image.open(save_path)
+                    im = im.crop((xx1,yy1,xx2,yy2))
+                    im.save(save_path)
+                    print("saved")
+                elif 260 < x1 < 350:
+                    print("red")
+                    idk_color = (51, 51, 255)
+                elif 400 < x1 < 480:
+                    print("blue")
+                    idk_color = (255, 153, 51)
+                elif 540 < x1 < 640:
+                    print("green")
+                    idk_color = (51, 255, 51)
+                elif 720 < x1 < 800:
+                    print("clear")
+                elif 830 < x1 < 865:
+                    print("quit")
+                    over = True
+
         elif fingers == voice_cmd:
             print("voice reg")
             with sr.Microphone() as source:
@@ -140,7 +199,11 @@ while running_main:
                         print("saved")
                     elif text == "exit" or "exit" in text:
                         print("exiting...")
-                        sys.exit(0)
+                        over = True
+                    elif text == "show" or "show" in text:
+                        show_tab =True
+                    elif text == "blind" or "blind" in text:
+                        show_tab =True
 
 
 
@@ -155,13 +218,20 @@ while running_main:
     img = cv2.bitwise_and(img, imgInv)
     img = cv2.bitwise_or(img, blackCanvas)
 
+
+    #img[0:103,0:926] = control_tab
+    if show_tab == True:
+        img[0:98,0:921] = control_tab
+        #img[0:1,0:1] = control_tab_off
+    else:
+        img[0:1,0:1] = control_tab_off
     if canvas_show == 0:
         cv2.imshow("Canvas", img)
     elif canvas_show == 1:
         cv2.imshow("Black", blackCanvas)
     # cv2.imshow("Inv", imgInv)
 
-    if cv2.waitKey(1) == ord('q'):
+    if cv2.waitKey(1) == ord('q') or over == True:
         break
 
     # lmList = detector.findPosition(img, draw=False)
