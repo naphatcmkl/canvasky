@@ -1,9 +1,14 @@
 import cv2
 import numpy as np
-import os
+import os,sys
 import time
 import speech_recognition as sr
 from cvzone.HandTrackingModule import HandDetector
+from mss import mss
+import pygetwindow
+import pyautogui
+from PIL import Image
+
 
 r = sr.Recognizer()
 
@@ -11,11 +16,14 @@ draw_mode = [0, 1, 0, 0, 0]
 erase_mode = [0, 1, 1, 0, 0]
 cap_all = [1, 1, 1, 1, 1]
 clear_all = [0, 0, 0, 0, 0]
+voice_cmd = [1, 1, 1, 1, 0]
 blue_color = (255, 0, 0)
 black_color = (0, 0, 0)
 idk_color = (0, 255, 0)
 brush_thick = 20
 eraser_thick = 60
+canvas_show = 0
+running_main = True
 
 deb = 0
 timer = 0
@@ -31,8 +39,9 @@ capture.set(4, 720)
 x_point, y_point = 0, 0
 blackCanvas = np.zeros((720, 1280, 3), np.uint8)
 
-while True:
+while running_main:
     # 1. Read capture
+    
     success, img = capture.read()
 
     # 2. Find Hand Landmarks
@@ -71,7 +80,7 @@ while True:
             x_point, y_point = x1, y1
         elif fingers == cap_all:
             print("capture all")
-        elif fingers == [1, 0, 0, 0, 0]:
+        elif fingers == voice_cmd:
             print("voice reg")
             with sr.Microphone() as source:
                 print("Speak: ")
@@ -87,33 +96,70 @@ while True:
                     # If the word we say translate == champ,
                     if text == "blue" or text == "bloom" or text == "boo" or text == "blue blue blue" or "blue" in text:
                         # Then print you're here.
-                        idk_color = (245, 115, 57)
+                        idk_color = (255, 153, 51)
                         print("Change color to blue")
                     elif text == "green" or text == "clean" or "green" in text:
-                        idk_color = (0, 255, 0)
+                        idk_color = (51, 255, 51)
                         print("Change color to green")
-                    elif text == "red" or text == "rape" or text == "lead" or text == "late" or text == "rate" or text == "race" or "red" in text :
-                        idk_color = (0, 0, 255)
+                    elif text == "red" or text == "rape" or text == "lead" or text == "late" or text == "rate" or text == "raid" or text == "race" or "red" in text :
+                        idk_color = (51, 51, 255)
                         print("Change color to red")
+                    elif text == "small" or "small" in text:
+                        print("set small brush")
+                    elif text == "medium" or "medium" in text:
+                        print("set medium brush")
+                    elif text == "big" or "big" in text:
+                        print("set big brush")
+                    elif text == "one" or "one" in text:
+                        print("set color slot 1")
+                        idk_color = (0, 0, 255)
+                    elif text == "two" or "two" in text:
+                        print("set color slot 2")
+                    elif text == "three" or "three" in text:
+                        print("set color slot 3")
+                    elif text == "capture" or "capture" in text:
+                        with mss() as sct:
+                            sct.shot()
+                            print("captured")
+                    elif text == "save" or "save" in text:
+                        print("saving...")
+                        save_path = 'savecanvas.png'
+                        all_titles = pygetwindow.getAllTitles()
+                        print(all_titles)
+                        save_window = pygetwindow.getWindowsWithTitle('Canvas')[0]
+                        xx1 = save_window.left
+                        yy1 = save_window.top
+                        height_1 = save_window.height
+                        width_1 = save_window.width
+                        xx2 = xx1 + width_1
+                        yy2 = yy1 + height_1
+                        pyautogui.screenshot(save_path)
+                        im = Image.open(save_path)
+                        im = im.crop((xx1,yy1,xx2,yy2))
+                        im.save(save_path)
+                        print("saved")
+                    elif text == "exit" or "exit" in text:
+                        print("exiting...")
+                        sys.exit(0)
+
+
 
                 except:
                     print("Sorry, couldn't recognize your voice.")
+        
 
     imgGray = cv2.cvtColor(blackCanvas, cv2.COLOR_BGR2GRAY)
     _, imgInv = cv2.threshold(imgGray, 50, 255, cv2.THRESH_BINARY_INV)
     imgInv = cv2.cvtColor(imgInv, cv2.COLOR_GRAY2BGR)
-    # print("type img", type(img))
-    # print("type imgInv ",type(imgInv))
-    # print("type black ",type(blackCanvas))
 
     img = cv2.bitwise_and(img, imgInv)
     img = cv2.bitwise_or(img, blackCanvas)
 
-    # hello
-    # hello2
-    cv2.imshow("Canvas", img)
-    cv2.imshow("Black", blackCanvas)
-    cv2.imshow("Inv", imgInv)
+    if canvas_show == 0:
+        cv2.imshow("Canvas", img)
+    elif canvas_show == 1:
+        cv2.imshow("Black", blackCanvas)
+    # cv2.imshow("Inv", imgInv)
 
     if cv2.waitKey(1) == ord('q'):
         break
