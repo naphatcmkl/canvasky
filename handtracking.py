@@ -26,8 +26,8 @@ control_tab_off = controller_list[1]
 # print("list2 ",controller_list[1])
 
 draw_mode = [0, 1, 0, 0, 0]
-erase_mode = [0, 1, 1, 0, 0]
-idle_mode = [0, 1, 1, 1, 0]
+erase_mode = [0, 1, 1, 1, 0]
+idle_mode = [0, 1, 1, 0, 0]
 cap_all = [1, 1, 1, 1, 1]
 clear_all = [0, 0, 0, 0, 0]
 voice_cmd = [1, 1, 0, 0, 1]
@@ -40,6 +40,7 @@ canvas_show = 0
 running_main = True
 over = False
 show_tab = True
+mode = "n"
 
 deb = 0
 timer = 0
@@ -83,6 +84,9 @@ while running_main:
         # print(fingers)
         if fingers == draw_mode:
             print("draw")
+            if mode != "d":
+                x_point,y_point = 0,0
+                mode = "d"
             # cv2.circle(blackCanvas, (x1, y1), 15, blue_color, cv2.FILLED)
             if x_point == 0 and y_point == 0:
                 x_point, y_point = x1, y1
@@ -91,17 +95,26 @@ while running_main:
 
         elif fingers == erase_mode:
             print("erase")
+            if mode != "e":
+                x_point,y_point = 0,0
+                mode = "e"
             # cv2.circle(blackCanvas, (x1, y1), 15, black_color, cv2.FILLED)
             if x_point == 0 and y_point == 0:
                 x_point, y_point = x1, y1
             cv2.line(blackCanvas, (x_point, y_point), (x1, y1), black_color, eraser_thick)
             x_point, y_point = x1, y1
         elif fingers == cap_all:
+            if mode != "c":
+                x_point,y_point = 0,0
+                mode = "c"
             print("capture all")
         elif fingers == idle_mode:
             print("idling")
+            if mode != "i":
+                x_point,y_point = 0,0
+                mode = "i"
             print("x1, ",x1," y1 ",y1)
-            cv2.rectangle(img,(x1,y1-25),(x2,y2+25),idk_color,cv2.FILLED)
+            cv2.rectangle(img,(x1-40,y1-40),(x2+40,y2+40),idk_color,cv2.FILLED)
             if y1 < 85:
                 if 60 < x1 < 100:
                     print("hide")
@@ -141,6 +154,9 @@ while running_main:
 
         elif fingers == voice_cmd:
             print("voice reg")
+            if mode != "v":
+                x_point,y_point = 0,0
+                mode = "v"
             with sr.Microphone() as source:
                 print("Speak: ")
 
@@ -153,14 +169,14 @@ while running_main:
                     print("You said: ", text)
 
                     # If the word we say translate == champ,
-                    if text == "blue" or text == "bloom" or text == "boo" or text == "blue blue blue" or "blue" in text:
+                    if text == "blue" or text == "bloom" or text == "boo" or "blue" in text:
                         # Then print you're here.
                         idk_color = (255, 153, 51)
                         print("Change color to blue")
                     elif text == "green" or text == "clean" or "green" in text:
                         idk_color = (51, 255, 51)
                         print("Change color to green")
-                    elif text == "red" or text == "rape" or text == "lead" or text == "late" or text == "rate" or text == "raid" or text == "race" or "red" in text :
+                    elif text == "red" or text == "rape" or text == "lead" or text == "late" or text == "rate" or text == "raid" or text == "laid" or text == "race" or "red" in text :
                         idk_color = (51, 51, 255)
                         print("Change color to red")
                     elif text == "small" or "small" in text:
@@ -172,15 +188,15 @@ while running_main:
                     elif text == "one" or "one" in text:
                         print("set color slot 1")
                         idk_color = (0, 0, 255)
-                    elif text == "two" or "two" in text:
+                    elif text == "two" or text == "too" or "two" in text or "too" in text:
                         print("set color slot 2")
-                    elif text == "three" or "three" in text:
+                    elif text == "three" or "three" in text or "tee" in text or "tree" in text or "tea" in text:
                         print("set color slot 3")
                     elif text == "capture" or "capture" in text:
                         with mss() as sct:
                             sct.shot()
                             print("captured")
-                    elif text == "save" or "save" in text:
+                    elif text == "save" or "save" in text or "safe" in text or "sape" in text:
                         print("saving...")
                         save_path = 'savecanvas.png'
                         all_titles = pygetwindow.getAllTitles()
@@ -200,15 +216,22 @@ while running_main:
                     elif text == "exit" or "exit" in text:
                         print("exiting...")
                         over = True
-                    elif text == "show" or "show" in text:
+                    elif text == "show" or "show" in text or "cho" in text or "chow" in text:
                         show_tab =True
-                    elif text == "blind" or "blind" in text:
-                        show_tab =True
+                    elif text == "blind" or "blind" in text or "bind" in text:
+                        show_tab =False
+                    elif text == "nothing" or "nothing" in text:
+                        print("do nothing")
+        
 
 
 
                 except:
                     print("Sorry, couldn't recognize your voice.")
+        else:
+            if mode != "n":
+                x_point,y_point = 0,0
+                mode = "n"
         
 
     imgGray = cv2.cvtColor(blackCanvas, cv2.COLOR_BGR2GRAY)
