@@ -67,6 +67,7 @@ while running_main:
 
     # 2. Find Hand Landmarks
     hands, img = detector.findHands(img, flipType=True)
+    #img = cv2.flip(img, 1)
 
 
     if hands:
