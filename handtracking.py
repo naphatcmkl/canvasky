@@ -184,7 +184,8 @@ while running_main:
 
                 try:
                     # Translate word into text
-                    text = r.recognize_google(audio)
+                    heard = r.recognize_google(audio)
+                    text = heard.lower()
                     print("You said: ", text)
 
                     # If the word we say translate == champ,
@@ -198,15 +199,24 @@ while running_main:
                     elif text == "red" or text == "rape" or text == "lead" or text == "late" or text == "rate" or text == "raid" or text == "laid" or text == "race" or "red" in text :
                         idk_color = (51, 51, 255)
                         print("Change color to red")
+                    elif text == "tiny" or "tiny" in text:
+                        print("set tiny brush")
+                        brush_thick = 5
                     elif text == "small" or "small" in text:
                         print("set small brush")
                         brush_thick = 10
                     elif text == "medium" or "medium" in text:
                         print("set medium brush")
                         brush_thick = 20
-                    elif text == "big" or "big" in text:
+                    elif text == "big" or "big" in text or "bick" in text or "bic" in text:
                         print("set big brush")
                         brush_thick = 40
+                    elif text == "huge" or "huge" in text:
+                        print("set huge brush")
+                        brush_thick = 60
+                    elif text == "giant" or "giant" in text:
+                        print("set giant brush")
+                        brush_thick = 80
                     elif text == "one" or "one" in text:
                         print("set color slot 1")
                         idk_color = (0, 0, 255)
@@ -266,6 +276,41 @@ while running_main:
                         print("clear")
                         #x_point,y_point = 0,0
                         cv2.rectangle(blackCanvas,(0,0),(1280,720),eraser_color,cv2.FILLED,)
+                    elif text == "done" or "done" in text or "finish" in text:
+                        print("saving...")
+                        all_titles = pygetwindow.getAllTitles()
+                        print(all_titles)
+                        album = os.listdir("gallery")
+                        all_pic = []
+                        for each_pic in album:
+                            all_pic.append(each_pic)
+                        album_empty = False
+                        if len(all_pic) <= 0:
+                            album_empty = True
+                            save_directory = 'gallery/canvas1.png'
+                        else:
+                            all_int = []
+                            for i in range (len(all_pic)):
+                                full = all_pic[i]
+                                cut_first = full[6:]
+                                all_int.append(int(cut_first[:-4]))
+                            save_directory = 'gallery/canvas'+str(max(all_int)+1)+'.png'
+                        save_window = pygetwindow.getWindowsWithTitle('Canvas')[0]
+                        xx1 = save_window.left
+                        yy1 = save_window.top
+                        height_1 = save_window.height
+                        width_1 = save_window.width
+                        xx2 = xx1 + width_1
+                        yy2 = yy1 + height_1
+                        save_path = 'gallery'
+                        pyautogui.screenshot(save_directory)
+                        im = Image.open(save_directory)
+                        im = im.crop((xx1,yy1,xx2,yy2))
+                        im.save(save_directory)
+                        
+                        print("canvas saved")
+                        over = True
+                        print("leaving")
 
                 except:
                     print("Sorry, couldn't recognize your voice.")
@@ -292,7 +337,7 @@ while running_main:
     if canvas_show == 0:
         cv2.imshow("Canvas", img)
     elif canvas_show == 1:
-        cv2.imshow("Black", blackCanvas)
+        cv2.imshow("Canvas", blackCanvas)
     # cv2.imshow("Inv", imgInv)
 
     if cv2.waitKey(1) == ord('q') or over == True:
