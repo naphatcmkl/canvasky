@@ -15,10 +15,13 @@ r = sr.Recognizer()
 control_path = "controlhead"
 mycontrol = os.listdir(control_path)
 controller_list = []
+check_list = []
 for index_me in mycontrol:
     image_reader = cv2.imread(f'{control_path}/{index_me}')
+    check_list.append(index_me)
     controller_list.append(image_reader)
-print("png head file ",controller_list)
+print("checl: ",check_list )
+#print("png head file ",controller_list)
 
 control_tab = controller_list[0]
 control_tab_off = controller_list[1]
@@ -107,6 +110,7 @@ while running_main:
             if mode != "c":
                 x_point,y_point = 0,0
                 mode = "c"
+            
             print("capture all")
         elif fingers == idle_mode:
             print("idling")
@@ -115,42 +119,56 @@ while running_main:
                 mode = "i"
             print("x1, ",x1," y1 ",y1)
             cv2.rectangle(img,(x1-40,y1-40),(x2+40,y2+40),idk_color,cv2.FILLED)
-            if y1 < 85:
-                if 60 < x1 < 100:
-                    print("hide")
-                    show_tab = False
-                elif 160 < x1 < 200:
-                    print("save")
-                    print("saving...")
-                    save_path = 'savecanvas.png'
-                    all_titles = pygetwindow.getAllTitles()
-                    print(all_titles)
-                    save_window = pygetwindow.getWindowsWithTitle('Canvas')[0]
-                    xx1 = save_window.left
-                    yy1 = save_window.top
-                    height_1 = save_window.height
-                    width_1 = save_window.width
-                    xx2 = xx1 + width_1
-                    yy2 = yy1 + height_1
-                    pyautogui.screenshot(save_path)
-                    im = Image.open(save_path)
-                    im = im.crop((xx1,yy1,xx2,yy2))
-                    im.save(save_path)
-                    print("saved")
-                elif 260 < x1 < 350:
-                    print("red")
-                    idk_color = (51, 51, 255)
-                elif 400 < x1 < 480:
-                    print("blue")
-                    idk_color = (255, 153, 51)
-                elif 540 < x1 < 640:
-                    print("green")
-                    idk_color = (51, 255, 51)
-                elif 720 < x1 < 800:
-                    print("clear")
-                elif 830 < x1 < 865:
-                    print("quit")
-                    over = True
+            if show_tab == True:
+                if y1 < 85:
+                    if 60 < x1 < 100:
+                        print("hide")
+                        show_tab = False
+                    elif 160 < x1 < 200:
+                        print("saving...")
+                        all_titles = pygetwindow.getAllTitles()
+                        print(all_titles)
+                        album = os.listdir("gallery")
+                        all_pic = []
+                        for each_pic in album:
+                            all_pic.append(each_pic)
+                        album_empty = False
+                        if len(all_pic) <= 0:
+                            album_empty = True
+                            save_directory = 'gallery/canvas1.png'
+                        else:
+                            all_int = []
+                            for i in range (len(all_pic)):
+                                full = all_pic[i]
+                                cut_first = full[6:]
+                                all_int.append(int(cut_first[:-4]))
+                            save_directory = 'gallery/canvas'+str(max(all_int)+1)+'.png'
+                        save_window = pygetwindow.getWindowsWithTitle('Canvas')[0]
+                        xx1 = save_window.left
+                        yy1 = save_window.top
+                        height_1 = save_window.height
+                        width_1 = save_window.width
+                        xx2 = xx1 + width_1
+                        yy2 = yy1 + height_1
+                        save_path = 'gallery'
+                        pyautogui.screenshot(save_directory)
+                        im = Image.open(save_directory)
+                        im = im.crop((xx1,yy1,xx2,yy2))
+                        im.save(save_directory)
+                    elif 260 <= x1 <= 350:
+                        print("red")
+                        idk_color = (51, 51, 255)
+                    elif 400 <= x1 <= 480:
+                        print("blue")
+                        idk_color = (255, 153, 51)
+                    elif 540 <= x1 <= 640:
+                        print("green")
+                        idk_color = (51, 255, 51)
+                    elif 720 <= x1 <= 800:
+                        print("clear")
+                    elif 830 <= x1 <= 865:
+                        print("quit")
+                        over = True
 
         elif fingers == voice_cmd:
             print("voice reg")
@@ -181,26 +199,45 @@ while running_main:
                         print("Change color to red")
                     elif text == "small" or "small" in text:
                         print("set small brush")
+                        brush_thick = 10
                     elif text == "medium" or "medium" in text:
                         print("set medium brush")
+                        brush_thick = 20
                     elif text == "big" or "big" in text:
                         print("set big brush")
+                        brush_thick = 40
                     elif text == "one" or "one" in text:
                         print("set color slot 1")
                         idk_color = (0, 0, 255)
                     elif text == "two" or text == "too" or "two" in text or "too" in text:
                         print("set color slot 2")
+                        idk_color = (0, 0, 255)
                     elif text == "three" or "three" in text or "tee" in text or "tree" in text or "tea" in text:
                         print("set color slot 3")
+                        idk_color = (0, 0, 255)
                     elif text == "capture" or "capture" in text:
                         with mss() as sct:
                             sct.shot()
                             print("captured")
                     elif text == "save" or "save" in text or "safe" in text or "sape" in text:
                         print("saving...")
-                        save_path = 'savecanvas.png'
                         all_titles = pygetwindow.getAllTitles()
                         print(all_titles)
+                        album = os.listdir("gallery")
+                        all_pic = []
+                        for each_pic in album:
+                            all_pic.append(each_pic)
+                        album_empty = False
+                        if len(all_pic) <= 0:
+                            album_empty = True
+                            save_directory = 'gallery/canvas1.png'
+                        else:
+                            all_int = []
+                            for i in range (len(all_pic)):
+                                full = all_pic[i]
+                                cut_first = full[6:]
+                                all_int.append(int(cut_first[:-4]))
+                            save_directory = 'gallery/canvas'+str(max(all_int)+1)+'.png'
                         save_window = pygetwindow.getWindowsWithTitle('Canvas')[0]
                         xx1 = save_window.left
                         yy1 = save_window.top
@@ -208,12 +245,14 @@ while running_main:
                         width_1 = save_window.width
                         xx2 = xx1 + width_1
                         yy2 = yy1 + height_1
-                        pyautogui.screenshot(save_path)
-                        im = Image.open(save_path)
+                        save_path = 'gallery'
+                        pyautogui.screenshot(save_directory)
+                        im = Image.open(save_directory)
                         im = im.crop((xx1,yy1,xx2,yy2))
-                        im.save(save_path)
-                        print("saved")
-                    elif text == "exit" or "exit" in text:
+                        im.save(save_directory)
+                        
+                        print("canvas saved")
+                    elif text == "exit" or "exit" in text or "except" in text:
                         print("exiting...")
                         over = True
                     elif text == "show" or "show" in text or "cho" in text or "chow" in text:
@@ -222,6 +261,9 @@ while running_main:
                         show_tab =False
                     elif text == "nothing" or "nothing" in text:
                         print("do nothing")
+                    elif text == "clear" or "clear" in text:
+                        print("clear")
+
         
 
 
@@ -255,6 +297,7 @@ while running_main:
     # cv2.imshow("Inv", imgInv)
 
     if cv2.waitKey(1) == ord('q') or over == True:
+        print("exited")
         break
 
     # lmList = detector.findPosition(img, draw=False)
