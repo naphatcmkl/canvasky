@@ -35,7 +35,7 @@ cap_all = [1, 1, 1, 1, 1]
 clear_all = [0, 0, 0, 0, 0]
 voice_cmd = [1, 1, 0, 0, 1]
 blue_color = (255, 0, 0)
-black_color = (0, 0, 0)
+eraser_color = (0, 0, 0)
 idk_color = (0, 255, 0)
 brush_thick = 20
 eraser_thick = 60
@@ -104,7 +104,7 @@ while running_main:
             # cv2.circle(blackCanvas, (x1, y1), 15, black_color, cv2.FILLED)
             if x_point == 0 and y_point == 0:
                 x_point, y_point = x1, y1
-            cv2.line(blackCanvas, (x_point, y_point), (x1, y1), black_color, eraser_thick)
+            cv2.line(blackCanvas, (x_point, y_point), (x1, y1), eraser_color, eraser_thick)
             x_point, y_point = x1, y1
         elif fingers == cap_all:
             if mode != "c":
@@ -166,6 +166,7 @@ while running_main:
                         idk_color = (51, 255, 51)
                     elif 720 <= x1 <= 800:
                         print("clear")
+                        cv2.rectangle(blackCanvas,(0,0),(1280,720),eraser_color,cv2.FILLED,)
                     elif 830 <= x1 <= 865:
                         print("quit")
                         over = True
@@ -263,10 +264,8 @@ while running_main:
                         print("do nothing")
                     elif text == "clear" or "clear" in text:
                         print("clear")
-
-        
-
-
+                        #x_point,y_point = 0,0
+                        cv2.rectangle(blackCanvas,(0,0),(1280,720),eraser_color,cv2.FILLED,)
 
                 except:
                     print("Sorry, couldn't recognize your voice.")
