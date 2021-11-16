@@ -18,7 +18,7 @@ idk_color = (0, 255, 0)
 mode = "n"
 over = False
 show_tab = True
-activate_voice_command = False
+activate_voice_command = True
 
 
 def main():
@@ -175,6 +175,7 @@ def main():
                             over = True
 
             elif fingers == voice_cmd:
+                global activate_voice_command
                 activate_voice_command = True
                 print("Voice Reg")
 
@@ -222,8 +223,10 @@ def main():
 def voice_command():
     global x_point, y_point, mode, brush_thick, eraser_thick, idk_color, over, show_tab, activate_voice_command
     r = sr.Recognizer()
+    print("using voice..")
 
     if activate_voice_command is True:
+        print("voice reg is actived")
         if mode != "v":
             x_point, y_point = 0, 0
             mode = "v"
