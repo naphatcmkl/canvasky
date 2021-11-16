@@ -174,10 +174,8 @@ def main():
                             print("quit")
                             over = True
 
-            elif fingers == voice_cmd:
-                global activate_voice_command
-                activate_voice_command = True
-                print("Voice Reg")
+            # elif fingers == voice_cmd:
+            #
 
             else:
                 if mode != "n":
@@ -225,8 +223,7 @@ def voice_command():
     r = sr.Recognizer()
     print("using voice..")
 
-    if activate_voice_command is True:
-        print("voice reg is actived")
+    while True:
         if mode != "v":
             x_point, y_point = 0, 0
             mode = "v"
