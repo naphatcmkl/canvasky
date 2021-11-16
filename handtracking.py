@@ -18,11 +18,14 @@ idk_color = (0, 255, 0)
 mode = "n"
 over = False
 show_tab = True
-activate_voice_command = True
+activate_voice_command = False
+eraser_color = (0, 0, 0)
+voic_user = False
+always_on = False
 
 
 def main():
-    global x_point, y_point, mode, brush_thick, eraser_thick, idk_color, over, show_tab, activate_voice_command
+    global x_point, y_point, mode, brush_thick, eraser_thick, idk_color, over, show_tab, activate_voice_command, eraser_color
     control_path = "controlhead"
     mycontrol = os.listdir(control_path)
     controller_list = []
@@ -46,7 +49,7 @@ def main():
     clear_all = [0, 0, 0, 0, 0]
     voice_cmd = [1, 1, 0, 0, 1]
     blue_color = (255, 0, 0)
-    eraser_color = (0, 0, 0)
+    
     canvas_show = 0
     running_main = True
 
@@ -61,6 +64,7 @@ def main():
     # Set webcam capture window size as 1280x720
     capture.set(3, 1280)
     capture.set(4, 720)
+    global black_canvas
     black_canvas = np.zeros((720, 1280, 3), np.uint8)
 
     while running_main:
@@ -115,6 +119,9 @@ def main():
                     mode = "c"
 
                 print("capture all")
+            elif fingers == voice_cmd:
+                activate_voice_command = True
+                print("turn voice cmd on: ", activate_voice_command)
             elif fingers == idle_mode:
                 print("idling")
                 if mode != "i":
@@ -125,6 +132,7 @@ def main():
                 if show_tab is True:
                     if y1 < 85:
                         if 60 < x1 < 100:
+                            global album_empty
                             print("hide")
                             show_tab = False
                         elif 160 < x1 < 200:
@@ -153,7 +161,8 @@ def main():
                             width_1 = save_window.width
                             xx2 = xx1 + width_1
                             yy2 = yy1 + height_1
-                            save_path = 'gallery'
+                            global save_path
+                            save_path = 'gallery' 
                             pyautogui.screenshot(save_directory)
                             im = Image.open(save_directory)
                             im = im.crop((xx1, yy1, xx2, yy2))
@@ -219,174 +228,186 @@ def main():
 
 
 def voice_command():
-    global x_point, y_point, mode, brush_thick, eraser_thick, idk_color, over, show_tab, activate_voice_command
+    global x_point, y_point, mode, brush_thick, eraser_thick, idk_color, over, show_tab, activate_voice_command, eraser_color, black_canvas, voic_user, album_empty, save_path, always_on
     r = sr.Recognizer()
     print("using voice..")
-
     while True:
-        if mode != "v":
-            x_point, y_point = 0, 0
-            mode = "v"
-        with sr.Microphone() as source:
-            print("Speak: ")
+        print("in voice def")
+        print("voic status: ", activate_voice_command, " always: ", always_on)
+        if activate_voice_command or always_on:
+            
 
-            # Listen
-            audio = r.listen(source)
+            if mode != "v":
+                x_point, y_point = 0, 0
+                mode = "v"
+            with sr.Microphone() as source:
+                print("Speak: ")
 
-            try:
-                # Translate word into text
-                heard = r.recognize_google(audio)
-                text = heard.lower()
-                print("You said: ", text)
+                # Listen
+                audio = r.listen(source)
 
-                # If the word we say translate == champ,
-                if text == "blue" or text == "bloom" or text == "boo" or "blue" in text:
-                    # Then print you're here.
-                    idk_color = (255, 153, 51)
-                    print("Change color to blue")
-                    activate_voice_command = False
-                elif text == "green" or text == "clean" or "green" in text:
-                    idk_color = (51, 255, 51)
-                    print("Change color to green")
-                    activate_voice_command = False
-                elif text == "red" or text == "rape" or text == "lead" or text == "late" or text == "rate" \
-                        or text == "raid" or text == "laid" or text == "race" or "red" in text:
-                    idk_color = (51, 51, 255)
-                    print("Change color to red")
-                    activate_voice_command = False
-                elif text == "tiny" or "tiny" in text:
-                    print("set tiny brush")
-                    brush_thick = 5
-                    activate_voice_command = False
-                elif text == "small" or "small" in text:
-                    print("set small brush")
-                    brush_thick = 10
-                    activate_voice_command = False
-                elif text == "medium" or "medium" in text:
-                    print("set medium brush")
-                    brush_thick = 20
-                    activate_voice_command = False
-                elif text == "big" or "big" in text or "bick" in text or "bic" in text:
-                    print("set big brush")
-                    brush_thick = 40
-                    activate_voice_command = False
-                elif text == "huge" or "huge" in text:
-                    print("set huge brush")
-                    brush_thick = 60
-                    activate_voice_command = False
-                elif text == "giant" or "giant" in text:
-                    print("set giant brush")
-                    brush_thick = 80
-                    activate_voice_command = False
-                elif text == "one" or "one" in text:
-                    print("set color slot 1")
-                    idk_color = (0, 0, 255)
-                    activate_voice_command = False
-                elif text == "two" or text == "too" or "two" in text or "too" in text:
-                    print("set color slot 2")
-                    idk_color = (0, 0, 255)
-                    activate_voice_command = False
-                elif text == "three" or "three" in text or "tee" in text or "tree" in text or "tea" in text:
-                    print("set color slot 3")
-                    idk_color = (0, 0, 255)
-                    activate_voice_command = False
-                elif text == "capture" or "capture" in text:
-                    with mss() as sct:
-                        sct.shot()
-                        print("captured")
+                try:
+                    # Translate word into text
+                    heard = r.recognize_google(audio)
+                    text = heard.lower()
+                    print("You said: ", text)
+
+                    # If the word we say translate == champ,
+                    if text == "blue" or text == "bloom" or text == "boo" or "blue" in text:
+                        # Then print you're here.
+                        idk_color = (255, 153, 51)
+                        print("Change color to blue")
                         activate_voice_command = False
-                elif text == "save" or "save" in text or "safe" in text or "sape" in text:
-                    print("saving...")
-                    all_titles = pygetwindow.getAllTitles()
-                    print(all_titles)
-                    album = os.listdir("gallery")
-                    all_pic = []
-                    for each_pic in album:
-                        all_pic.append(each_pic)
-                    album_empty = False
-                    if len(all_pic) <= 0:
-                        album_empty = True
-                        save_directory = 'gallery/canvas1.png'
+                    elif text == "green" or text == "clean" or "green" in text:
+                        idk_color = (51, 255, 51)
+                        print("Change color to green")
                         activate_voice_command = False
-                    else:
-                        all_int = []
-                        for i in range(len(all_pic)):
-                            full = all_pic[i]
-                            cut_first = full[6:]
-                            all_int.append(int(cut_first[:-4]))
-                        save_directory = 'gallery/canvas' + str(max(all_int) + 1) + '.png'
+                    elif text == "red" or text == "rape" or text == "lead" or text == "late" or text == "rate" \
+                            or text == "raid" or text == "laid" or text == "race" or "red" in text:
+                        idk_color = (51, 51, 255)
+                        print("Change color to red")
                         activate_voice_command = False
-                    save_window = pygetwindow.getWindowsWithTitle('Canvas')[0]
-                    xx1 = save_window.left
-                    yy1 = save_window.top
-                    height_1 = save_window.height
-                    width_1 = save_window.width
-                    xx2 = xx1 + width_1
-                    yy2 = yy1 + height_1
-                    save_path = 'gallery'
-                    pyautogui.screenshot(save_directory)
-                    im = Image.open(save_directory)
-                    im = im.crop((xx1, yy1, xx2, yy2))
-                    im.save(save_directory)
+                    elif text == "tiny" or "tiny" in text:
+                        print("set tiny brush")
+                        brush_thick = 5
+                        activate_voice_command = False
+                    elif text == "small" or "small" in text:
+                        print("set small brush")
+                        brush_thick = 10
+                        activate_voice_command = False
+                    elif text == "medium" or "medium" in text:
+                        print("set medium brush")
+                        brush_thick = 20
+                        activate_voice_command = False
+                    elif text == "big" or "big" in text or "bick" in text or "bic" in text:
+                        print("set big brush")
+                        brush_thick = 40
+                        activate_voice_command = False
+                    elif text == "huge" or "huge" in text:
+                        print("set huge brush")
+                        brush_thick = 60
+                        activate_voice_command = False
+                    elif text == "giant" or "giant" in text:
+                        print("set giant brush")
+                        brush_thick = 80
+                        activate_voice_command = False
+                    elif text == "one" or "one" in text:
+                        print("set color slot 1")
+                        idk_color = (0, 0, 255)
+                        activate_voice_command = False
+                    elif text == "two" or text == "too" or "two" in text or "too" in text:
+                        print("set color slot 2")
+                        idk_color = (0, 0, 255)
+                        activate_voice_command = False
+                    elif text == "three" or "three" in text or "tee" in text or "tree" in text or "tea" in text:
+                        print("set color slot 3")
+                        idk_color = (0, 0, 255)
+                        activate_voice_command = False
+                    elif text == "capture" or "capture" in text:
+                        with mss() as sct:
+                            sct.shot()
+                            print("captured")
+                            activate_voice_command = False
+                    elif text == "always" or "always" in text:
+                        if always_on == False:
+                            always_on = True
+                        else:
+                            always_on = False
+                    elif text == "save" or "save" in text or "safe" in text or "sape" in text:
+                        print("saving...")
+                        all_titles = pygetwindow.getAllTitles()
+                        print(all_titles)
+                        album = os.listdir("gallery")
+                        all_pic = []
+                        for each_pic in album:
+                            all_pic.append(each_pic)
+                        album_empty = False
+                        if len(all_pic) <= 0:
+                            album_empty = True
+                            save_directory = 'gallery/canvas1.png'
+                            activate_voice_command = False
+                        else:
+                            all_int = []
+                            for i in range(len(all_pic)):
+                                full = all_pic[i]
+                                cut_first = full[6:]
+                                all_int.append(int(cut_first[:-4]))
+                            save_directory = 'gallery/canvas' + str(max(all_int) + 1) + '.png'
+                            activate_voice_command = False
+                        save_window = pygetwindow.getWindowsWithTitle('Canvas')[0]
+                        xx1 = save_window.left
+                        yy1 = save_window.top
+                        height_1 = save_window.height
+                        width_1 = save_window.width
+                        xx2 = xx1 + width_1
+                        yy2 = yy1 + height_1
+                        save_path = 'gallery'
+                        pyautogui.screenshot(save_directory)
+                        im = Image.open(save_directory)
+                        im = im.crop((xx1, yy1, xx2, yy2))
+                        im.save(save_directory)
 
-                    print("canvas saved")
-                elif text == "exit" or "exit" in text or "except" in text:
-                    print("exiting...")
-                    over = True
-                    activate_voice_command = False
-                elif text == "show" or "show" in text or "cho" in text or "chow" in text:
-                    show_tab = True
-                    activate_voice_command = False
-                elif text == "blind" or "blind" in text or "bind" in text:
-                    show_tab = False
-                    activate_voice_command = False
-                elif text == "nothing" or "nothing" in text:
-                    print("do nothing")
-                elif text == "clear" or "clear" in text:
-                    print("clear")
-                    # x_point,y_point = 0,0
-                    cv2.rectangle(blackCanvas, (0, 0), (1280, 720), eraser_color, cv2.FILLED, )
-                    activate_voice_command = False
-                elif text == "done" or "done" in text or "finish" in text:
-                    print("saving...")
-                    all_titles = pygetwindow.getAllTitles()
-                    print(all_titles)
-                    album = os.listdir("gallery")
-                    all_pic = []
-                    for each_pic in album:
-                        all_pic.append(each_pic)
-                    album_empty = False
-                    if len(all_pic) <= 0:
-                        album_empty = True
-                        save_directory = 'gallery/canvas1.png'
+                        print("canvas saved")
+                    elif text == "exit" or "exit" in text or "except" in text:
+                        print("exiting...")
+                        over = True
                         activate_voice_command = False
-                    else:
-                        all_int = []
-                        for i in range(len(all_pic)):
-                            full = all_pic[i]
-                            cut_first = full[6:]
-                            all_int.append(int(cut_first[:-4]))
-                        save_directory = 'gallery/canvas' + str(max(all_int) + 1) + '.png'
+                    elif text == "show" or "show" in text or "cho" in text or "chow" in text:
+                        show_tab = True
                         activate_voice_command = False
-                    save_window = pygetwindow.getWindowsWithTitle('Canvas')[0]
-                    xx1 = save_window.left
-                    yy1 = save_window.top
-                    height_1 = save_window.height
-                    width_1 = save_window.width
-                    xx2 = xx1 + width_1
-                    yy2 = yy1 + height_1
-                    save_path = 'gallery'
-                    pyautogui.screenshot(save_directory)
-                    im = Image.open(save_directory)
-                    im = im.crop((xx1, yy1, xx2, yy2))
-                    im.save(save_directory)
+                    elif text == "blind" or "blind" in text or "bind" in text:
+                        show_tab = False
+                        activate_voice_command = False
+                    elif text == "nothing" or "nothing" in text:
+                        print("do nothing")
+                    elif text == "clear" or "clear" in text:
+                        print("clear")
+                        # x_point,y_point = 0,0
+                        cv2.rectangle(black_canvas, (0, 0), (1280, 720), eraser_color, cv2.FILLED, )
+                        activate_voice_command = False
+                    elif text == "done" or "done" in text or "finish" in text:
+                        print("saving...")
+                        all_titles = pygetwindow.getAllTitles()
+                        print(all_titles)
+                        album = os.listdir("gallery")
+                        all_pic = []
+                        for each_pic in album:
+                            all_pic.append(each_pic)
+                        album_empty = False
+                        if len(all_pic) <= 0:
+                            album_empty = True
+                            save_directory = 'gallery/canvas1.png'
+                            activate_voice_command = False
+                        else:
+                            all_int = []
+                            for i in range(len(all_pic)):
+                                full = all_pic[i]
+                                cut_first = full[6:]
+                                all_int.append(int(cut_first[:-4]))
+                            save_directory = 'gallery/canvas' + str(max(all_int) + 1) + '.png'
+                            activate_voice_command = False
+                        save_window = pygetwindow.getWindowsWithTitle('Canvas')[0]
+                        xx1 = save_window.left
+                        yy1 = save_window.top
+                        height_1 = save_window.height
+                        width_1 = save_window.width
+                        xx2 = xx1 + width_1
+                        yy2 = yy1 + height_1
+                        save_path = 'gallery'
+                        pyautogui.screenshot(save_directory)
+                        im = Image.open(save_directory)
+                        im = im.crop((xx1, yy1, xx2, yy2))
+                        im.save(save_directory)
 
-                    print("canvas saved")
-                    over = True
-                    print("leaving")
+                        print("canvas saved")
+                        over = True
+                        print("leaving")
+                        break
 
-            except:
-                print("Sorry, couldn't recognize your voice.")
+                except:
+                    print("Sorry, couldn't recognize your voice.")
+        if over == True:
+            break
 
 
 t1 = threading.Thread(target=main)
