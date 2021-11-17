@@ -13,7 +13,7 @@ import threading
 
 x_point, y_point = 0, 0
 brush_thick = 20
-eraser_thick = 60
+
 idk_color = (0, 255, 0)
 mode = "n"
 over = False
@@ -23,9 +23,36 @@ eraser_color = (0, 0, 0)
 voic_user = False
 always_on = False
 
+# setting_opts = os.listdir("setting.txt")
+# print("setting: ", setting_opts)
+
+tiny_th = 5
+small_th = 10
+medium_th = 20
+big_th = 40
+huge_th = 60
+giant_th = 80
+eraser_thick = 60
+all_setting = []
+all_other = all_setting[6:]
+next_color = 0
+other_color = []
+other_rgb = []
+
+for i in range (len(all_other)):
+    if i == next_color:
+        other_color.append(all_other[i])
+        next_color += 4
+    else:
+        other_rgb.append(all_other[i])
+
+danger_words = ["always","alway","blind","bind","red","green","blue","raid","laid","late","exit","clear","done","quit","except","accept","clea","clare","boo","blu","bloom","small","medium","tiny","big","huge","giant","save","safe","capture","show","cho","chow","one","two","too","three","tree","tea","tee","black","nothing","clean","enter","leave","control","function","shift","tab"]
+danger_sign = ["!","@","#","$","%","^","&","*"," ","(",")","_","-","+","=","/","?",",","<",">","0","1","2","3","4","5","6","7","8","9","."]
+
 
 def main():
     global x_point, y_point, mode, brush_thick, eraser_thick, idk_color, over, show_tab, activate_voice_command, eraser_color
+    global tiny_th, small_th, medium_th, big_th, huge_th, giant_th, other_color, other_rgb
     control_path = "controlhead"
     mycontrol = os.listdir(control_path)
     controller_list = []
@@ -34,7 +61,7 @@ def main():
         image_reader = cv2.imread(f'{control_path}/{index_me}')
         check_list.append(index_me)
         controller_list.append(image_reader)
-    print("checl: ", check_list)
+    print("check: ", check_list)
     # print("png head file ",controller_list)
 
     control_tab = controller_list[0]
@@ -229,6 +256,7 @@ def main():
 
 def voice_command():
     global x_point, y_point, mode, brush_thick, eraser_thick, idk_color, over, show_tab, activate_voice_command, eraser_color, black_canvas, voic_user, album_empty, save_path, always_on
+    global tiny_th, small_th, medium_th, big_th, huge_th, giant_th, other_color, other_rgb
     r = sr.Recognizer()
     print("using voice..")
     while True:
@@ -308,7 +336,7 @@ def voice_command():
                             sct.shot()
                             print("captured")
                             activate_voice_command = False
-                    elif text == "always" or "always" in text:
+                    elif text == "always" or "always" in text or "alway" in text:
                         if always_on == False:
                             always_on = True
                         else:
@@ -403,6 +431,13 @@ def voice_command():
                         over = True
                         print("leaving")
                         break
+                    elif text in other_color:
+                        color_index = other_color.index(text)
+                        start_index = color_index*3
+                        r_index = start_index
+                        g_index = start_index+1
+                        b_index = start_index+2
+                        idk_color = (b_index, g_index, r_index)
 
                 except:
                     print("Sorry, couldn't recognize your voice.")
