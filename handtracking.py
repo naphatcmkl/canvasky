@@ -22,9 +22,14 @@ activate_voice_command = False
 eraser_color = (0, 0, 0)
 voic_user = False
 always_on = False
+lock = False
 
 # setting_opts = os.listdir("setting.txt")
 # print("setting: ", setting_opts)
+
+setting_file = open("setting.txt","r")
+all_setting = setting_file.read().splitlines()
+
 
 tiny_th = 5
 small_th = 10
@@ -33,8 +38,16 @@ big_th = 40
 huge_th = 60
 giant_th = 80
 eraser_thick = 60
-all_setting = []
-all_other = all_setting[6:]
+#all_setting = []
+all_other = all_setting[7:]
+tiny_th = all_setting[0]
+small_th = all_setting[1]
+medium_th = all_setting[2]
+big_th = all_setting[3]
+huge_th = all_setting[4]
+giant_th = all_setting[5]
+eraser_thick = all_setting[6]
+print("all setting: ", all_setting ," color setting: ",all_other)
 next_color = 0
 other_color = []
 other_rgb = []
@@ -46,13 +59,13 @@ for i in range (len(all_other)):
     else:
         other_rgb.append(all_other[i])
 
-danger_words = ["always","alway","blind","bind","red","green","blue","raid","laid","late","exit","clear","done","quit","except","accept","clea","clare","boo","blu","bloom","small","medium","tiny","big","huge","giant","save","safe","capture","show","cho","chow","one","two","too","three","tree","tea","tee","black","nothing","clean","enter","leave","control","function","shift","tab"]
+danger_words = ["always","alway","blind","bind","red","green","blue","raid","laid","late","exit","clear","done","quit","except","accept","clea","clare","boo","blu","bloom","small","medium","tiny","big","huge","giant","save","safe","capture","show","cho","chow","one","two","too","three","tree","tea","tee","black","nothing","clean","enter","leave","control","function","shift","tab","lock","unlock","locked","unlocked"]
 danger_sign = ["!","@","#","$","%","^","&","*"," ","(",")","_","-","+","=","/","?",",","<",">","0","1","2","3","4","5","6","7","8","9","."]
 
 
 def main():
     global x_point, y_point, mode, brush_thick, eraser_thick, idk_color, over, show_tab, activate_voice_command, eraser_color
-    global tiny_th, small_th, medium_th, big_th, huge_th, giant_th, other_color, other_rgb
+    global tiny_th, small_th, medium_th, big_th, huge_th, giant_th, other_color, other_rgb,lock
     control_path = "controlhead"
     mycontrol = os.listdir(control_path)
     controller_list = []
@@ -120,26 +133,32 @@ def main():
 
             # print(fingers)
             if fingers == draw_mode:
-                print("draw")
-                if mode != "d":
-                    x_point, y_point = 0, 0
-                    mode = "d"
-                # cv2.circle(black_canvas, (x1, y1), 15, blue_color, cv2.FILLED)
-                if x_point == 0 and y_point == 0:
+                if not lock:
+                    print("draw")
+                    if mode != "d":
+                        x_point, y_point = 0, 0
+                        mode = "d"
+                    # cv2.circle(black_canvas, (x1, y1), 15, blue_color, cv2.FILLED)
+                    if x_point == 0 and y_point == 0:
+                        x_point, y_point = x1, y1
+                    cv2.line(black_canvas, (x_point, y_point), (x1, y1), idk_color, brush_thick)
                     x_point, y_point = x1, y1
-                cv2.line(black_canvas, (x_point, y_point), (x1, y1), idk_color, brush_thick)
-                x_point, y_point = x1, y1
+                else:
+                    print("locked")
 
             elif fingers == erase_mode:
-                print("erase")
-                if mode != "e":
-                    x_point, y_point = 0, 0
-                    mode = "e"
-                # cv2.circle(black_canvas, (x1, y1), 15, black_color, cv2.FILLED)
-                if x_point == 0 and y_point == 0:
+                if not lock:
+                    print("erase")
+                    if mode != "e":
+                        x_point, y_point = 0, 0
+                        mode = "e"
+                    # cv2.circle(black_canvas, (x1, y1), 15, black_color, cv2.FILLED)
+                    if x_point == 0 and y_point == 0:
+                        x_point, y_point = x1, y1
+                    cv2.line(black_canvas, (x_point, y_point), (x1, y1), eraser_color, eraser_thick)
                     x_point, y_point = x1, y1
-                cv2.line(black_canvas, (x_point, y_point), (x1, y1), eraser_color, eraser_thick)
-                x_point, y_point = x1, y1
+                else:
+                    print("locked")
             elif fingers == cap_all:
                 if mode != "c":
                     x_point, y_point = 0, 0
@@ -204,8 +223,11 @@ def main():
                             print("green")
                             idk_color = (51, 255, 51)
                         elif 720 <= x1 <= 800:
-                            print("clear")
-                            cv2.rectangle(black_canvas, (0, 0), (1280, 720), eraser_color, cv2.FILLED, )
+                            if not lock:
+                                print("clear")
+                                cv2.rectangle(black_canvas, (0, 0), (1280, 720), eraser_color, cv2.FILLED, )
+                            else:
+                                print("locked")
                         elif 830 <= x1 <= 865:
                             print("quit")
                             over = True
@@ -256,12 +278,12 @@ def main():
 
 def voice_command():
     global x_point, y_point, mode, brush_thick, eraser_thick, idk_color, over, show_tab, activate_voice_command, eraser_color, black_canvas, voic_user, album_empty, save_path, always_on
-    global tiny_th, small_th, medium_th, big_th, huge_th, giant_th, other_color, other_rgb
+    global tiny_th, small_th, medium_th, big_th, huge_th, giant_th, other_color, other_rgb,lock
     r = sr.Recognizer()
-    print("using voice..")
+    #print("using voice..")
     while True:
-        print("in voice def")
-        print("voic status: ", activate_voice_command, " always: ", always_on)
+        #print("in voice def")
+        #print("voic status: ", activate_voice_command, " always: ", always_on)
         if activate_voice_command or always_on:
             
 
@@ -386,12 +408,19 @@ def voice_command():
                     elif text == "blind" or "blind" in text or "bind" in text:
                         show_tab = False
                         activate_voice_command = False
+                    elif text == "lock" or "lock" in text or "locked" in text:
+                        lock = True
+                    elif text == "unlock" or "unlock" in text or "unlocked" in text:
+                        lock = False
                     elif text == "nothing" or "nothing" in text:
                         print("do nothing")
                     elif text == "clear" or "clear" in text:
-                        print("clear")
-                        # x_point,y_point = 0,0
-                        cv2.rectangle(black_canvas, (0, 0), (1280, 720), eraser_color, cv2.FILLED, )
+                        if not lock:
+                            print("clear")
+                            # x_point,y_point = 0,0
+                            cv2.rectangle(black_canvas, (0, 0), (1280, 720), eraser_color, cv2.FILLED, )
+                        else:
+                            print("locked")
                         activate_voice_command = False
                     elif text == "done" or "done" in text or "finish" in text:
                         print("saving...")
