@@ -405,7 +405,7 @@ def voice_command():
                     elif text == "show" or "show" in text or "cho" in text or "chow" in text:
                         show_tab = True
                         activate_voice_command = False
-                    elif text == "blind" or "blind" in text or "bind" in text:
+                    elif text == "blind" or "blind" in text or "bind" in text or "hide" in text:
                         show_tab = False
                         activate_voice_command = False
                     elif text == "lock" or "lock" in text or "locked" in text:
