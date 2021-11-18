@@ -398,7 +398,7 @@ def voice_command():
                         im.save(save_directory)
 
                         print("canvas saved")
-                    elif text == "exit" or "exit" in text or "except" in text:
+                    elif text == "exit" or "exit" in text or "except" in text or "quit" in text:
                         print("exiting...")
                         over = True
                         activate_voice_command = False
