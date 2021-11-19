@@ -53,6 +53,7 @@ def setting_click():
 def back_click():
     forget_all_setting()
     clear_brushset()
+    clear_color()
     place_menu()
     
 
@@ -95,9 +96,48 @@ def default_brush():
     setting_checker(0)
     print("default set !")
 
+def tolist(word):
+    return [i for i in word]
+
+def int_checker(num):
+    num = str(num)
+    if len(num)<=0:
+        return False
+    if num[0] in ('-','+'):
+        return num[1:].isdigit()
+    else:
+        return num.isdigit()
+
+def delete_color():
+    target = str(box.get(ANCHOR))
+    print("deleting: ", target)
+    all_setting = get_setting()
+    target_index = all_setting.index(target)
+    del all_setting[target_index]
+    del all_setting[target_index]
+    del all_setting[target_index]
+    del all_setting[target_index]
+    file_writer = open("setting.txt","w")
+    for j in range(len(all_setting)):
+        file_writer.write(all_setting[j]+"\n")
+    file_writer.close()
+    setting_checker(0)
+    print("deleted")
+    
+
+
 def cmd_checker(cmd):
-    cmd = str(cmd)
+    cmd = str(cmd).lower()
+    cmd_sign = tolist(cmd)
     failed = False
+    danger_words = ["always","alway","blind","bind","red","green","blue","raid","laid","late","exit","clear","done","quit","except","accept","clea","clare","boo","blu","bloom","small","medium","tiny","big","huge","giant","save","safe","capture","show","cho","chow","one","two","too","three","tree","tea","tee","black","nothing","clean","enter","leave","control","function","shift","tab","lock","unlock","locked","unlocked"]
+    danger_signs = ["!","@","#","$","%","^","&","*"," ","(",")","_","-","+","=","/","?",",","<",">","0","1","2","3","4","5","6","7","8","9","."]
+
+    if cmd in danger_words:
+        failed = True
+    for j in range(len(cmd_sign)):
+        if cmd_sign[j] in danger_signs:
+            failed = True
 
     return failed
 
@@ -105,32 +145,48 @@ def rgb_checker(r,g,b):
     r = str(r)
     g = str(g)
     b = str(b)
-
     failed = False
+    if not int_checker(r) or not int_checker(g) or not int_checker(b):
+        failed = True
     return failed
 
+def clear_color():
+    commEn.delete(0, END)
+    redEn.delete(0, END)
+    grnEn.delete(0, END)
+    bluEn.delete(0, END)
 
 def color_adder():
-    cmdGet = str(commEn.get())
+    cmdGet = str(commEn.get()).lower()
     rGet = str(redEn.get())
     gGet = str(grnEn.get())
     bGet = str(bluEn.get())
     cmd_checked = cmd_checker(cmdGet)
     rgb_checked = rgb_checker(rGet,gGet,bGet)
-    if cmd_checked and rgb_checked:
+    clear_color()
+    if not cmd_checked and not rgb_checked:
         print("adding color..")
+        all_setting = get_setting()
+        #new_setting = []
+        #brush_setting = all_setting[0:7]
+        all_setting.append(cmdGet)
+        all_setting.append(rGet)
+        all_setting.append(gGet)
+        all_setting.append(bGet)
+
+        file_writer = open("setting.txt","w")
+        for j in range(len(all_setting)):
+            file_writer.write(all_setting[j]+"\n")
+        file_writer.close()
 
         print("color added")
+        setting_checker(1)
+        print("renew altered")
     else:
         print("error adding color")
 
 
-def int_checker(num):
-    num = str(num)
-    if num[0] in ('-','+'):
-        return num[1:].isdigit()
-    else:
-        return num.isdigit()
+
 
 
 def save_brush():
@@ -227,6 +283,7 @@ def get_setting():
     return all_setting
 
 def color_set(color_list):
+    box.delete(0, END)
     for i in range (len(color_list)):
         box.insert(END, color_list[i])
 
@@ -257,8 +314,9 @@ def setting_checker(many):
             next_color += 4
         else:
             other_rgb.append(all_other[i])
-    if many == 1:
-        color_set(other_color)
+    #if many == 1:
+
+    color_set(other_color)
 
 #button variables
 btn1 = Button(root, text="Begin", fg='#97DDE5', height=2, width=10, font=NormalFont, command=init_canvas)
@@ -318,8 +376,8 @@ save = Button(root, text="SAVE", fg='#97DDE5', width=10, font=('Thonburi 20 bold
 default = Button(root, text="DEFAULT", fg='#CD6155', width=10, font=('Thonburi 20 bold'),command= default_brush)
 back= Button(root, text="BACK", fg='#82E0AA', width=10, font=('Thonburi 20 bold'), command=back_click)
 box = Listbox(root, bg="#fffde7", fg="black", borderwidth=0, highlightthickness=0, font=('Thonburi', 20), height=7, width=18)
-add = Button(root, text="ADD", fg='#97DDE5', width=10, font=('Thonburi 20 bold'))
-delete = Button(root, text="DELETE", fg='#CD6155', width=10, font=('Thonburi 20 bold'))
+add = Button(root, text="ADD", fg='#97DDE5', width=10, font=('Thonburi 20 bold'),command= color_adder)
+delete = Button(root, text="DELETE", fg='#CD6155', width=10, font=('Thonburi 20 bold'),command= delete_color)
 
 
 def place_setting():
