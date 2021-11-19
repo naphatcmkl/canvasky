@@ -45,6 +45,8 @@ def init_canvas():
     root.destroy()
 
 
+
+
 #button variables
 btn1 = Button(root,text="Begin",fg='#97DDE5',font=NormalFont,command=init_canvas)
 btn2= Button(root,text="Exit",fg='#CD6155',font=ExitFont,command=root.destroy)
