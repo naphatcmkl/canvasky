@@ -40,13 +40,13 @@ giant_th = 80
 eraser_thick = 60
 #all_setting = []
 all_other = all_setting[7:]
-tiny_th = all_setting[0]
-small_th = all_setting[1]
-medium_th = all_setting[2]
-big_th = all_setting[3]
-huge_th = all_setting[4]
-giant_th = all_setting[5]
-eraser_thick = all_setting[6]
+tiny_th = int(all_setting[0])
+small_th = int(all_setting[1])
+medium_th = int(all_setting[2])
+big_th = int(all_setting[3])
+huge_th = int(all_setting[4])
+giant_th = int(all_setting[5])
+eraser_thick = int(all_setting[6])
 print("all setting: ", all_setting ," color setting: ",all_other)
 next_color = 0
 other_color = []
@@ -466,7 +466,7 @@ def voice_command():
                         r_index = start_index
                         g_index = start_index+1
                         b_index = start_index+2
-                        idk_color = (b_index, g_index, r_index)
+                        idk_color = (int(other_rgb[b_index]),int(other_rgb[g_index]),int(other_rgb[r_index]) )
 
                 except:
                     print("Sorry, couldn't recognize your voice.")
