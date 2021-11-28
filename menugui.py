@@ -46,7 +46,12 @@ def hidebtn():
 
 def place_instruction():
     print("hello label instruction, btn cmdline, btn toolbar, btn gestures, btn back, label info")
-
+    instruction_label.place(x=20, y=20)
+    info_label.place(x=50, y=0)
+    voicecmd_btn.place(x=40, y=60)
+    gestures_btn.place(x=200, y=60)
+    toolbar_btn.place(x=370, y=60)
+    back_btn.place(x=620, y=24)
 
 def showbtn():
     btn4.place(x=500,y=450)
@@ -329,6 +334,12 @@ btn2= Button(root,text="Exit", fg='#CD6155', height=2, width=10, font=ExitFont, 
 btn3= Button(root,text="Instruction", fg='#C39BD3', height=2, width=10, font=NormalFont, command=hidebtn)
 btn4= Button(root,text="Setting", fg="#82E0AA", height=2, width=10, font=NormalFont, command=setting_click)
 status_text = Label(textvariable=status, bg='#F5B7B1', fg="white", font=statusFont)
+instruction_label = Label(root, text="Instruction", bg='#F5B7B1', fg="white",  font=('Thonburi 22 bold'))
+info_label = Label(textvariable=status)
+gestures_btn = Button(root,text="Hand Gestures", fg='#CD6155', height=2, width=10, font=NormalFont)
+voicecmd_btn = Button(root,text="Voice Command Line", fg='#C39BD3', height=2, width=10, font=NormalFont)
+toolbar_btn = Button(root,text="Tool Bar", fg='#82E0AA', height=2, width=10, font=NormalFont)
+back_btn = Button(root,text="Back", fg='#82E0AA', height=2, width=10, font=NormalFont)
 
 #status variable
 setting = Label(root, text="Setting", bg='#F5B7B1', fg="white",  font=('Thonburi 22 bold'))
@@ -439,6 +450,7 @@ def place_setting():
     add.place(x=370, y=440)
     delete.place(x=540, y=440)
     setting_checker(1)
+
 
 def forget_all_setting():
     setting.place_forget()
