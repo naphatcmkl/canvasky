@@ -60,13 +60,13 @@ def hidebtn():
 
 def cmd_click():
     info_txt.set(get_instruction(0))
-    info_label.place(x=178, y=125)
+    info_label.place(x=120, y=125)
 def gest_click():
     info_txt.set(get_instruction(1))
-    info_label.place(x=188, y=150)
+    info_label.place(x=130, y=150)
 def tool_click():
     info_txt.set(get_instruction(2))
-    info_label.place(x=277, y=150)
+    info_label.place(x=220, y=150)
 
 def back_instruction():
     instruction_label.place_forget()
