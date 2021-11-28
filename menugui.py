@@ -45,6 +45,17 @@ def hidebtn():
     status_text.place_forget()
     place_instruction()
 
+
+def back_instruction():
+    instruction_label.place_forget()
+    info_label.place_forget()
+    voicecmd_btn.place_forget()
+    gestures_btn.place_forget()
+    toolbar_btn.place_forget()
+    back_btn.place_forget()
+    place_menu()
+
+
 def place_instruction():
     print("hello label instruction, btn cmdline, btn toolbar, btn gestures, btn back, label info")
     instruction_label.place(x=20, y=20)
@@ -340,7 +351,7 @@ info_label = Label(textvariable=status)
 gestures_btn = Button(root,text="Hand Gestures", fg='#CD6155', height=2, width=15, font=Instruction_Font)
 voicecmd_btn = Button(root,text="Voice Command", fg='#C39BD3', height=2, width=15, font=Instruction_Font)
 toolbar_btn = Button(root,text="Tool Bar", fg='#82E0AA', height=2, width=10, font=Instruction_Font)
-back_btn = Button(root,text="Back", fg='#82E0AA', height=2, width=10, font=NormalFont)
+back_btn = Button(root,text="Back", fg='#82E0AA', height=2, width=10, font=NormalFont, command=back_instruction)
 
 #status variable
 setting = Label(root, text="Setting", bg='#F5B7B1', fg="white",  font=('Thonburi 22 bold'))
