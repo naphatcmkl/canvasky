@@ -37,6 +37,15 @@ def showMessage():
 
 def hidebtn():
     btn4.place_forget()
+    btn1.place_forget()
+    btn2.place_forget()
+    btn3.place_forget()
+    MyLabel.place_forget()
+    status_text.place_forget()
+
+def place_instruction():
+    print("hello")
+
 
 def showbtn():
     btn4.place(x=500,y=450)
@@ -56,11 +65,6 @@ def back_click():
     clear_color()
     place_menu()
     
-
-
-
-
-
 
 def place_menu():
     btn1.place(x=170,y=280)
