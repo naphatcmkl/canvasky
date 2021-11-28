@@ -6,4 +6,4 @@ Hand Gestures
 
 *NOTICE*
 -idle selection mode can interact with the tool bar
--when listen mode is active, users do not have to use voice command gesture
+-when always listen mode is active, users do not have to use voice command gesture
