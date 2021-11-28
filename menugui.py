@@ -31,6 +31,18 @@ statusFont = tkFont.Font(family='Calibri', size=20)
 #text on screen
 MyLabel = Label(text="Canvasky",fg="#FCF3CF",bg='#F5B7B1',font=TitleFont)
 status = StringVar()
+info_txt = StringVar()
+
+def get_instruction(act):
+    if act == 0:
+        instruction_file = open("cmdline.txt","r")
+    elif act == 1:
+        instruction_file = open("handgestures.txt","r")
+    else:
+        instruction_file = open("toolbar.txt","r")
+    instruction_array = instruction_file.read().splitlines()
+    instruction = '\n'.join(instruction_array)
+    return instruction
 
 #test chuey2 ja
 def showMessage():
@@ -44,6 +56,15 @@ def hidebtn():
     MyLabel.place_forget()
     status_text.place_forget()
     place_instruction()
+
+def cmd_click():
+    info_txt.set(get_instruction(0))
+
+def gest_click():
+    info_txt.set(get_instruction(1))
+
+def tool_click():
+    info_txt.set(get_instruction(2))
 
 
 def back_instruction():
@@ -347,10 +368,11 @@ btn3= Button(root,text="Instruction", fg='#C39BD3', height=2, width=10, font=Nor
 btn4= Button(root,text="Setting", fg="#82E0AA", height=2, width=10, font=NormalFont, command=setting_click)
 status_text = Label(root,textvariable=status, bg='#F5B7B1', fg="white", font=statusFont)
 instruction_label = Label(root, text="Instruction", bg='#F5B7B1', fg="white",  font=('Thonburi 22 bold'))
-info_label = Label(textvariable=status)
-gestures_btn = Button(root,text="Hand Gestures", fg='#CD6155', height=2, width=15, font=Instruction_Font)
-voicecmd_btn = Button(root,text="Voice Command", fg='#C39BD3', height=2, width=15, font=Instruction_Font)
-toolbar_btn = Button(root,text="Tool Bar", fg='#82E0AA', height=2, width=10, font=Instruction_Font)
+
+info_label = Label(textvariable=info_txt)
+gestures_btn = Button(root,text="Hand Gestures", fg='#CD6155', height=2, width=15, font=Instruction_Font, command=gest_click)
+voicecmd_btn = Button(root,text="Voice Command", fg='#C39BD3', height=2, width=15, font=Instruction_Font, command=cmd_click)
+toolbar_btn = Button(root,text="Tool Bar", fg='#82E0AA', height=2, width=10, font=Instruction_Font, command=tool_click)
 back_btn = Button(root,text="Back", fg='#82E0AA', height=2, width=10, font=NormalFont, command=back_instruction)
 
 #status variable

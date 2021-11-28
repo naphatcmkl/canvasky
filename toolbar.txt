@@ -1,0 +1,3 @@
+Tools bar
+-eye
+-floppy disk
