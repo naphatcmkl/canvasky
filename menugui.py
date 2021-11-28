@@ -42,9 +42,10 @@ def hidebtn():
     btn3.place_forget()
     MyLabel.place_forget()
     status_text.place_forget()
+    place_instruction()
 
 def place_instruction():
-    print("hello")
+    print("hello label instruction, btn cmdline, btn toolbar, btn gestures, btn back, label info")
 
 
 def showbtn():
