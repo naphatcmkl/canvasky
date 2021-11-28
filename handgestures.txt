@@ -1,3 +1,9 @@
 Hand Gestures
--one finger
--two fingers
+-Draw Mode: use only index finger
+-Idle Selection Mode: use index and middle finger
+-Eraser Mode: use index, middle, and ring finger
+-Voice Command Mode: use thumb, index, and little finger
+
+*NOTICE*
+-idle selection mode can interact with the tool bar
+-when listen mode is active, users do not have to use voice command gesture

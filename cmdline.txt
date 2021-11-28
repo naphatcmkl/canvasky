@@ -1,4 +1,23 @@
 Voice Command Lines
--red
--green
--blue
+( You can say any color name that has been added to the setting to change color )
+
+-red: change to red brush                      
+-green: change to green brush                   
+-blue: change to blue brush                      
+-tiny: change brush thickness to tiny            
+-small: change brush thickness to small         
+-medium: change brush thickness to medium        
+-big: change brush thickness to big              
+-huge: change brush thickness to huge            
+-giant: change brush thickness to giant          
+-exit/quit: exit the program                    
+-save: save canvas
+-capture: capture the entire screen
+-show: show tool bar
+-blind/hide: hide tool bar
+-always: toggle always listen mode
+-clear: clear the screen
+-nothing: do nothing
+-lock: turn lock mode on (cannot draw,erase,clear)
+-unlock: turn lock mode off
+-done/finish: save and exit

@@ -1,3 +1,10 @@
 Tools bar
--eye
--floppy disk
+( tool bar needs to interact with selection mode )
+
+-eye: hide tool bar
+-floppy disk: save canvas
+-red circle: change to red brush
+-green circle: change to green brush
+-blue circle: change to blue brush
+-eraser: clear the screen
+-door: exit the program

@@ -14,6 +14,7 @@ root.config(menu=myMenu)
 ExitFont = tkFont.Font(family='Helvetica', size=20, weight='bold')
 NormalFont = tkFont.Font(family='Helvetica', size=20, weight='bold')
 Instruction_Font = tkFont.Font(family='Helvetica', size=10, weight='bold')
+Info_Font= tkFont.Font(family='Helvetica', size=12, weight='normal')
 TitleFont = tkFont.Font(family='Calibri', size=80)
 statusFont = tkFont.Font(family='Calibri', size=20)
 
@@ -59,13 +60,13 @@ def hidebtn():
 
 def cmd_click():
     info_txt.set(get_instruction(0))
-
+    info_label.place(x=178, y=125)
 def gest_click():
     info_txt.set(get_instruction(1))
-
+    info_label.place(x=188, y=150)
 def tool_click():
     info_txt.set(get_instruction(2))
-
+    info_label.place(x=277, y=150)
 
 def back_instruction():
     instruction_label.place_forget()
@@ -80,7 +81,6 @@ def back_instruction():
 def place_instruction():
     print("hello label instruction, btn cmdline, btn toolbar, btn gestures, btn back, label info")
     instruction_label.place(x=20, y=20)
-    info_label.place(x=50, y=0)
     voicecmd_btn.place(x=40, y=60)
     gestures_btn.place(x=200, y=60)
     toolbar_btn.place(x=370, y=60)
@@ -369,7 +369,7 @@ btn4= Button(root,text="Setting", fg="#82E0AA", height=2, width=10, font=NormalF
 status_text = Label(root,textvariable=status, bg='#F5B7B1', fg="white", font=statusFont)
 instruction_label = Label(root, text="Instruction", bg='#F5B7B1', fg="white",  font=('Thonburi 22 bold'))
 
-info_label = Label(textvariable=info_txt)
+info_label = Label(textvariable=info_txt, anchor="e", justify=LEFT, font=Info_Font, bg='white')
 gestures_btn = Button(root,text="Hand Gestures", fg='#CD6155', height=2, width=15, font=Instruction_Font, command=gest_click)
 voicecmd_btn = Button(root,text="Voice Command", fg='#C39BD3', height=2, width=15, font=Instruction_Font, command=cmd_click)
 toolbar_btn = Button(root,text="Tool Bar", fg='#82E0AA', height=2, width=10, font=Instruction_Font, command=tool_click)
